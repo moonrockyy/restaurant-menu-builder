@@ -202,19 +202,3 @@ vercel --prod
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contribution Guide](./src/app/pages/Contribute.tsx) for details.
-
-### Code Style
-
-- Use TypeScript for all new code
-- Follow existing component patterns
-- Write meaningful commit messages
-- Test your changes thoroughly
-- Keep components small and focused
-
-## 🙏 Acknowledgments
-
-- **Supabase**: For the amazing backend-as-a-service platform
-- **Radix UI**: For accessible, unstyled components
-- **Tailwind CSS**: For the utility-first CSS framework
-- **Figma**: For the original design inspiration
-- **React Community**: For the amazing ecosystem
