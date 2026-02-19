@@ -4,7 +4,6 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { 
-  Menu, 
   ArrowLeft, 
   Edit, 
   Eye, 
@@ -18,7 +17,6 @@ import {
 import { toast } from "sonner";
 import { createClient } from "@supabase/supabase-js";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
-import { ThemeToggle } from "../components/ThemeToggle";
 import type { MenuData } from "../types/menu";
 import {
   AlertDialog,
@@ -134,29 +132,6 @@ export default function MyMenus() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link to="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <Menu className="w-8 h-8 text-orange-600" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
-              MenuCraft
-            </h1>
-          </Link>
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <Button onClick={() => navigate("/menu-builder")} className="bg-orange-600 hover:bg-orange-700">
-              <Plus className="w-4 h-4 mr-2" />
-              New Menu
-            </Button>
-            <Button onClick={() => navigate("/dashboard")} variant="outline">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Dashboard
-            </Button>
-          </div>
-        </div>
-      </header>
-
       {/* Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">

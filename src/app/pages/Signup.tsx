@@ -4,11 +4,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Menu } from "lucide-react";
-import { toast } from "sonner";
-import { createClient } from "@supabase/supabase-js";
-import { projectId, publicAnonKey } from "/utils/supabase/info";
-import { ThemeToggle } from "../components/ThemeToggle";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -17,84 +13,27 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { signup, loginWithGoogle } = useAuth();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-b6941cdd/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${publicAnonKey}`,
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            name,
-            businessName,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Signup error:", data.error);
-        toast.error(data.error || "Failed to sign up");
-        setLoading(false);
-        return;
-      }
-
-      toast.success("Account created successfully! Please login.");
+    const success = await signup(email, password, name, businessName);
+    if (success) {
       navigate("/login");
-    } catch (error) {
-      console.error("Signup error:", error);
-      toast.error("An error occurred during signup");
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleGoogleSignup = async () => {
-    try {
-      const supabase = createClient(
-        `https://${projectId}.supabase.co`,
-        publicAnonKey
-      );
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-
-      if (error) {
-        console.error("Google signup error:", error);
-        toast.error(error.message || "Failed to sign up with Google");
-      }
-    } catch (error) {
-      console.error("Google signup error:", error);
-      toast.error("An error occurred during Google signup");
-    }
+    setLoading(true);
+    await loginWithGoogle();
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2">
-            <Menu className="w-8 h-8 text-orange-600" />
-            <h1 className="text-2xl font-bold text-foreground">MenuCraft</h1>
-          </Link>
-          <ThemeToggle />
-        </div>
-      </header>
-
       {/* Signup Form */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">

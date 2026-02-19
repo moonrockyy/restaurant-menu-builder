@@ -4,90 +4,34 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Menu } from "lucide-react";
-import { toast } from "sonner";
-import { createClient } from "@supabase/supabase-js";
-import { projectId, publicAnonKey } from "/utils/supabase/info";
-import { ThemeToggle } from "../components/ThemeToggle";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login, loginWithGoogle } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      const supabase = createClient(
-        `https://${projectId}.supabase.co`,
-        publicAnonKey
-      );
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        console.error("Login error:", error);
-        toast.error(error.message || "Failed to login");
-        setLoading(false);
-        return;
-      }
-
-      if (data.session?.access_token) {
-        localStorage.setItem("access_token", data.session.access_token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        toast.success("Login successful!");
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("An error occurred during login");
-      setLoading(false);
+    const success = await login(email, password);
+    if (success) {
+      navigate("/dashboard");
     }
+    setLoading(false);
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      const supabase = createClient(
-        `https://${projectId}.supabase.co`,
-        publicAnonKey
-      );
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-
-      if (error) {
-        console.error("Google login error:", error);
-        toast.error(error.message || "Failed to login with Google");
-      }
-    } catch (error) {
-      console.error("Google login error:", error);
-      toast.error("An error occurred during Google login");
-    }
+    setLoading(true);
+    await loginWithGoogle();
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2">
-            <Menu className="w-8 h-8 text-orange-600" />
-            <h1 className="text-2xl font-bold text-foreground">MenuCraft</h1>
-          </Link>
-          <ThemeToggle />
-        </div>
-      </header>
-
       {/* Login Form */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">

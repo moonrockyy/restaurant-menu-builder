@@ -92,71 +92,20 @@ app.post('/make-server-b6941cdd/menu', async (c) => {
     
     const supabase = getSupabaseClient()
     
-    // Try to get user with the access token
-    let user
-    let authError
+    // Verify the JWT token using the service role client
+    const { data: { user }, error } = await supabase.auth.getUser(accessToken)
     
-    try {
-      const result = await supabase.auth.getUser(accessToken)
-      user = result.data.user
-      authError = result.error
-    } catch (err) {
-      console.log('Exception getting user:', err)
-      authError = err as any
-    }
-    
-    // If getUser fails, try to verify token and get user ID from JWT
-    if (authError || !user) {
-      try {
-        // Decode JWT to get user ID (base64url decode of payload)
-        const parts = accessToken.split('.')
-        if (parts.length === 3) {
-          // Decode base64url to base64
-          let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
-          // Add padding if needed
-          while (base64.length % 4) {
-            base64 += '='
-          }
-          
-          // Decode using atob (available in Deno)
-          const decoded = atob(base64)
-          const payload = JSON.parse(decoded)
-          const userId = payload.sub
-          
-          console.log('Decoded JWT, user ID:', userId)
-          
-          if (userId) {
-            // Get user by ID using admin API
-            const { data: adminUser, error: adminError } = await supabase.auth.admin.getUserById(userId)
-            if (adminUser?.user && !adminError) {
-              user = adminUser.user
-              authError = null
-              console.log('Authenticated user via admin API:', user.id)
-            } else {
-              console.log('Admin API error:', adminError)
-            }
-          }
-        }
-      } catch (jwtError) {
-        console.log('JWT decode error:', jwtError)
-      }
-    }
-    
-    if (authError) {
-      console.log('Auth error details:', {
-        message: authError.message,
-        status: authError.status,
-        name: authError.name
-      })
-      return c.json({ error: `Unauthorized: ${authError.message}` }, 401)
+    if (error) {
+      console.log('Token verification failed:', error.message)
+      return c.json({ error: `Unauthorized: ${error.message}` }, 401)
     }
     
     if (!user?.id) {
-      console.log('User not found after authentication')
-      return c.json({ error: 'Unauthorized: User not found' }, 401)
+      console.log('User not found in token')
+      return c.json({ error: 'Unauthorized: Invalid user token' }, 401)
     }
     
-    console.log('Authenticated user:', user.id)
+    console.log('Successfully authenticated user:', user.id)
 
     const menuData = await c.req.json()
     
@@ -268,14 +217,37 @@ app.get('/make-server-b6941cdd/menu/public/:slug', async (c) => {
 // Get all menus for a user
 app.get('/make-server-b6941cdd/menus', async (c) => {
   try {
-    const accessToken = c.req.header('Authorization')?.split(' ')[1]
+    const authHeader = c.req.header('Authorization')
+    console.log('Menus endpoint - Authorization header:', authHeader ? 'Present' : 'Missing')
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('Menus endpoint - Invalid authorization header format')
+      return c.json({ error: 'Unauthorized: Missing or invalid authorization header' }, 401)
+    }
+    
+    const accessToken = authHeader.split(' ')[1]
+    
+    if (!accessToken) {
+      console.log('Menus endpoint - Access token is missing')
+      return c.json({ error: 'Unauthorized: Access token missing' }, 401)
+    }
+    
     const supabase = getSupabaseClient()
     
-    const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken)
-    if (!user?.id || authError) {
-      console.log('Authorization error while fetching menus:', authError)
-      return c.json({ error: 'Unauthorized' }, 401)
+    // Verify JWT token using service role client
+    const { data: { user }, error } = await supabase.auth.getUser(accessToken)
+    
+    if (error) {
+      console.log('Menus endpoint - Token verification failed:', error.message)
+      return c.json({ error: `Unauthorized: ${error.message}` }, 401)
     }
+    
+    if (!user?.id) {
+      console.log('Menus endpoint - User not found in token')
+      return c.json({ error: 'Unauthorized: Invalid user token' }, 401)
+    }
+    
+    console.log('Menus endpoint - Successfully authenticated user:', user.id)
 
     const menusListKey = `menus:${user.id}`
     const menuIds = await kv.get(menusListKey) || []
@@ -311,15 +283,38 @@ app.get('/make-server-b6941cdd/menus', async (c) => {
 // Get a specific menu by ID
 app.get('/make-server-b6941cdd/menu/:menuId', async (c) => {
   try {
-    const accessToken = c.req.header('Authorization')?.split(' ')[1]
+    const authHeader = c.req.header('Authorization')
     const menuId = c.req.param('menuId')
+    console.log('Get menu endpoint - Authorization header:', authHeader ? 'Present' : 'Missing')
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('Get menu endpoint - Invalid authorization header format')
+      return c.json({ error: 'Unauthorized: Missing or invalid authorization header' }, 401)
+    }
+    
+    const accessToken = authHeader.split(' ')[1]
+    
+    if (!accessToken) {
+      console.log('Get menu endpoint - Access token is missing')
+      return c.json({ error: 'Unauthorized: Access token missing' }, 401)
+    }
+    
     const supabase = getSupabaseClient()
     
-    const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken)
-    if (!user?.id || authError) {
-      console.log('Authorization error while fetching menu:', authError)
-      return c.json({ error: 'Unauthorized' }, 401)
+    // Verify JWT token using service role client
+    const { data: { user }, error } = await supabase.auth.getUser(accessToken)
+    
+    if (error) {
+      console.log('Get menu endpoint - Token verification failed:', error.message)
+      return c.json({ error: `Unauthorized: ${error.message}` }, 401)
     }
+    
+    if (!user?.id) {
+      console.log('Get menu endpoint - User not found in token')
+      return c.json({ error: 'Unauthorized: Invalid user token' }, 401)
+    }
+    
+    console.log('Get menu endpoint - Successfully authenticated user:', user.id)
 
     const menuKey = `menu:${user.id}:${menuId}`
     const menu = await kv.get(menuKey)

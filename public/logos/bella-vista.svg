@@ -1,0 +1,11 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Italian restaurant tower -->
+  <rect x="20" y="12" width="8" height="24" fill="#DC2626"/>
+  <rect x="18" y="10" width="12" height="4" fill="#EA580C"/>
+  <!-- Tower details -->
+  <rect x="22" y="14" width="4" height="3" fill="#FFFFFF"/>
+  <rect x="22" y="19" width="4" height="3" fill="#FFFFFF"/>
+  <rect x="22" y="24" width="4" height="3" fill="#FFFFFF"/>
+  <!-- Base -->
+  <rect x="16" y="36" width="16" height="4" fill="#7F1D1D"/>
+</svg>

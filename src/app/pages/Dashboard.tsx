@@ -6,8 +6,6 @@ import { Badge } from "../components/ui/badge";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Progress } from "../components/ui/progress";
 import { 
-  Menu, 
-  LogOut, 
   Plus, 
   FileText, 
   Share2, 
@@ -24,19 +22,8 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { toast } from "sonner";
-import { createClient } from "@supabase/supabase-js";
-import { projectId, publicAnonKey } from "/utils/supabase/info";
-import { ThemeToggle } from "../components/ThemeToggle";
+import { useAuth } from "../contexts/AuthContext";
 import type { MenuData } from "../types/menu";
-
-interface User {
-  id: string;
-  email: string;
-  user_metadata: {
-    name: string;
-    businessName?: string;
-  };
-}
 
 interface MenuStats {
   totalItems: number;
@@ -46,7 +33,7 @@ interface MenuStats {
 }
 
 export default function Dashboard() {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, token, logout } = useAuth();
   const [hasMenu, setHasMenu] = useState(false);
   const [menuData, setMenuData] = useState<MenuData | null>(null);
   const [menuStats, setMenuStats] = useState<MenuStats | null>(null);
@@ -55,47 +42,18 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    checkAuth();
-  }, []);
+    if (user) {
+      loadDashboardData();
+    }
+  }, [user, token]);
 
-  const checkAuth = async () => {
-    const supabase = createClient(
-      `https://${projectId}.supabase.co`,
-      publicAnonKey
-    );
+  const loadDashboardData = async () => {
+    if (!token) return;
 
     try {
-      // Get session - this will automatically handle OAuth callback from URL hash
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-      // If we have a session from OAuth callback, save it
-      if (session && !localStorage.getItem("access_token")) {
-        localStorage.setItem("access_token", session.access_token);
-        localStorage.setItem("user", JSON.stringify(session.user));
-        // Clear URL hash if present
-        if (window.location.hash) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-        toast.success("Login successful!");
-      }
-
-      const token = localStorage.getItem("access_token");
-      const userStr = localStorage.getItem("user");
-
-      if (!token || !userStr) {
-        if (sessionError) {
-          console.error("Session error:", sessionError);
-        }
-        navigate("/login");
-        return;
-      }
-
-      const userData = JSON.parse(userStr);
-      setUser(userData);
-
       // Check if user has a menu and fetch menu data
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-b6941cdd/menu`,
+        `https://nyqfsuwxrzrfnrslpgfj.supabase.co/functions/v1/make-server-b6941cdd/menus`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -105,12 +63,14 @@ export default function Dashboard() {
 
       if (response.ok) {
         const data = await response.json();
-        if (data.menu) {
+        if (data.menus && data.menus.length > 0) {
+          // Get the most recent menu
+          const latestMenu = data.menus[0];
           setHasMenu(true);
-          setMenuData(data.menu);
+          setMenuData(latestMenu);
           
           // Calculate statistics
-          const items = data.menu.items || [];
+          const items = latestMenu.items || [];
           const categories = new Set(items.map((item: any) => item.category)).size;
           const prices = items
             .map((item: any) => parseFloat(item.price) || 0)
@@ -120,8 +80,8 @@ export default function Dashboard() {
             : 0;
           
           // Completion percentage (consider menu complete if has business name, description, and at least 3 items)
-          const hasBusinessName = data.menu.businessName && data.menu.businessName.trim() !== "";
-          const hasDescription = data.menu.businessDescription && data.menu.businessDescription.trim() !== "";
+          const hasBusinessName = latestMenu.businessName && latestMenu.businessName.trim() !== "";
+          const hasDescription = latestMenu.businessDescription && latestMenu.businessDescription.trim() !== "";
           const hasItems = items.length >= 3;
           const completionPercentage = Math.round(
             ((hasBusinessName ? 30 : 0) + 
@@ -155,21 +115,8 @@ export default function Dashboard() {
   };
 
   const handleLogout = async () => {
-    try {
-      const supabase = createClient(
-        `https://${projectId}.supabase.co`,
-        publicAnonKey
-      );
-
-      await supabase.auth.signOut();
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("user");
-      toast.success("Logged out successfully");
-      navigate("/");
-    } catch (error) {
-      console.error("Logout error:", error);
-      toast.error("Failed to logout");
-    }
+    logout();
+    navigate("/");
   };
 
   const handleCopyMenuLink = async () => {
@@ -230,38 +177,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link to="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="relative">
-              <Menu className="w-8 h-8 text-orange-600" />
-              <Sparkles className="w-3 h-3 text-orange-400 absolute -top-1 -right-1 animate-pulse" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
-              MenuCraft
-            </h1>
-          </Link>
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50">
-              <Avatar className="h-7 w-7">
-                <AvatarFallback className="bg-orange-600 text-white text-xs">
-                  {user?.user_metadata?.name ? getInitials(user.user_metadata.name) : "U"}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm font-medium hidden sm:inline">
-                {user?.user_metadata?.name || "User"}
-              </span>
-            </div>
-            <Button onClick={handleLogout} variant="ghost" className="gap-2">
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Logout</span>
-            </Button>
-          </div>
-        </div>
-      </header>
-
       {/* Dashboard Content */}
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}

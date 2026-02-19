@@ -1,12 +1,13 @@
 import { Card } from "./ui/card";
-import { type Template, type MenuData } from "../types/menu";
+import { type Template, type MenuData, type BackgroundSettings } from "../types/menu";
 
 interface MenuPreviewProps {
   template: Template;
   menuData: MenuData;
+  backgroundSettings?: BackgroundSettings;
 }
 
-export function MenuPreview({ template, menuData }: MenuPreviewProps) {
+export function MenuPreview({ template, menuData, backgroundSettings }: MenuPreviewProps) {
   // Group items by category
   const groupedItems = menuData.items.reduce((acc, item) => {
     if (!acc[item.category]) {
@@ -22,24 +23,62 @@ export function MenuPreview({ template, menuData }: MenuPreviewProps) {
     return category.charAt(0).toUpperCase() + category.slice(1) + "s";
   };
 
+  // Get background styles
+  const getBackgroundStyles = () => {
+    if (backgroundSettings?.type === "custom" && backgroundSettings.imageUrl) {
+      return {
+        backgroundImage: `url(${backgroundSettings.imageUrl})`,
+        backgroundSize: backgroundSettings.size,
+        backgroundPosition: backgroundSettings.position.replace('-', ' '),
+        backgroundRepeat: backgroundSettings.size === "repeat" ? "repeat" : "no-repeat",
+        opacity: backgroundSettings.opacity / 100,
+        filter: `brightness(${backgroundSettings.brightness}%) blur(${backgroundSettings.blur}px)`,
+      };
+    }
+    return {
+      backgroundColor: template.backgroundColor,
+    };
+  };
+
   return (
     <Card
-      className="shadow-2xl overflow-hidden"
-      style={{ backgroundColor: template.backgroundColor }}
+      className="shadow-2xl overflow-hidden relative"
+      style={{ 
+        backgroundColor: template.backgroundColor,
+        backgroundImage: template.backgroundGradient || (backgroundSettings?.type === "custom" && backgroundSettings.imageUrl ? `url(${backgroundSettings.imageUrl})` : undefined),
+        backgroundSize: backgroundSettings?.type === "custom" ? backgroundSettings.size : "cover",
+        backgroundPosition: backgroundSettings?.type === "custom" ? backgroundSettings.position.replace('-', ' ') : "center",
+        backgroundRepeat: backgroundSettings?.type === "custom" ? (backgroundSettings.size === "repeat" ? "repeat" : "no-repeat") : "no-repeat",
+        fontFamily: template.fontFamily || "inherit",
+      }}
     >
-      <div className="p-8 md:p-12">
+      {/* Custom Background Layer */}
+      {backgroundSettings?.type === "custom" && backgroundSettings.imageUrl && (
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${backgroundSettings.imageUrl})`,
+            backgroundSize: backgroundSettings.size,
+            backgroundPosition: backgroundSettings.position.replace('-', ' '),
+            backgroundRepeat: backgroundSettings.size === "repeat" ? "repeat" : "no-repeat",
+            opacity: backgroundSettings.opacity / 100,
+            filter: `brightness(${backgroundSettings.brightness}%) blur(${backgroundSettings.blur}px)`,
+          }}
+        />
+      )}
+      <div className="p-8 md:p-12 relative z-10" style={{ fontFamily: template.fontFamily || "inherit" }}>
         {/* Header */}
         <div className="text-center mb-12">
           <h1
             className="text-4xl md:text-5xl font-bold mb-4"
-            style={{ color: template.primaryColor }}
+            style={{ color: template.primaryColor, fontFamily: template.fontFamily || "inherit" }}
           >
             {menuData.businessName || "Your Business Name"}
           </h1>
           {menuData.businessDescription && (
             <p
               className="text-lg md:text-xl max-w-2xl mx-auto"
-              style={{ color: template.textColor, opacity: 0.8 }}
+              style={{ color: template.textColor, opacity: 0.8, fontFamily: template.fontFamily || "inherit" }}
             >
               {menuData.businessDescription}
             </p>
@@ -66,6 +105,7 @@ export function MenuPreview({ template, menuData }: MenuPreviewProps) {
                   style={{
                     color: template.primaryColor,
                     borderColor: template.accentColor,
+                    fontFamily: template.fontFamily || "inherit",
                   }}
                 >
                   {getCategoryTitle(category)}
@@ -80,7 +120,7 @@ export function MenuPreview({ template, menuData }: MenuPreviewProps) {
                         <div className="flex items-baseline gap-3 mb-2">
                           <h3
                             className="text-xl font-semibold"
-                            style={{ color: template.textColor }}
+                            style={{ color: template.textColor, fontFamily: template.fontFamily || "inherit" }}
                           >
                             {item.name}
                           </h3>
@@ -98,6 +138,7 @@ export function MenuPreview({ template, menuData }: MenuPreviewProps) {
                             style={{
                               color: template.textColor,
                               opacity: 0.7,
+                              fontFamily: template.fontFamily || "inherit",
                             }}
                           >
                             {item.description}
@@ -106,7 +147,7 @@ export function MenuPreview({ template, menuData }: MenuPreviewProps) {
                       </div>
                       <div
                         className="text-xl font-bold flex-shrink-0"
-                        style={{ color: template.primaryColor }}
+                        style={{ color: template.primaryColor, fontFamily: template.fontFamily || "inherit" }}
                       >
                         ${item.price}
                       </div>
@@ -123,7 +164,11 @@ export function MenuPreview({ template, menuData }: MenuPreviewProps) {
           <div className="mt-12 pt-8 border-t-2" style={{ borderColor: template.accentColor }}>
             <p
               className="text-center text-sm"
-              style={{ color: template.textColor, opacity: 0.6 }}
+              style={{ 
+                color: template.textColor, 
+                opacity: 0.6, 
+                fontFamily: template.fontFamily || "inherit" 
+              }}
             >
               Thank you for dining with us
             </p>

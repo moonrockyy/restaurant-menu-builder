@@ -1,0 +1,13 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sunrise cafe logo -->
+  <circle cx="24" cy="24" r="16" fill="#FDB813"/>
+  <path d="M24 8 Q24 4 28 8 L32 16 Q28 12 24 12 Z" fill="#F59E0B"/>
+  <!-- Sun rays -->
+  <path d="M24 4 L24 2" stroke="#F59E0B" stroke-width="2"/>
+  <path d="M32 8 L34 6" stroke="#F59E0B" stroke-width="1.5"/>
+  <path d="M16 8 L14 6" stroke="#F59E0B" stroke-width="1.5"/>
+  <path d="M36 16 L38 14" stroke="#F59E0B" stroke-width="1.5"/>
+  <path d="M12 16 L10 14" stroke="#F59E0B" stroke-width="1.5"/>
+  <!-- Coffee cup -->
+  <ellipse cx="24" cy="32" rx="6" ry="4" fill="#8B4513"/>
+</svg>
