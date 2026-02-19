@@ -288,13 +288,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Figma**: For the original design inspiration
 - **React Community**: For the amazing ecosystem
 
-## 📞 Support
-
-- **Documentation**: Check this README and inline code comments
-- **Issues**: Report bugs via GitHub Issues
-- **Features**: Request features via GitHub Discussions
-- **Email**: [your-email@example.com]
-
 ## 🔮 Roadmap
 
 ### Version 1.1
@@ -314,9 +307,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Staff management features
 - [ ] Inventory integration
 - [ ] Advanced reporting
-
----
-
-**Built with ❤️ for restaurant owners everywhere**
-
-*MenuCraft - Making beautiful menus accessible to everyone*
