@@ -1,21 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
-import { 
-  ArrowLeft, 
-  Edit, 
-  Eye, 
-  Trash2,
-  Plus,
-  Package,
-  Calendar,
-  ExternalLink,
-  Loader2
-} from "lucide-react";
+import { Plus, Package, Eye, Edit, Copy, Trash2, ExternalLink, Loader2, Calendar } from "lucide-react";
 import { toast } from "sonner";
-import { createClient } from "@supabase/supabase-js";
+import { useAuth } from "../contexts/AuthContext";
+import CreateMenuDialog from "../components/CreateMenuDialog";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import type { MenuData } from "../types/menu";
 import {
@@ -30,8 +22,11 @@ import {
 } from "../components/ui/alert-dialog";
 
 export default function MyMenus() {
-  const [menus, setMenus] = useState<MenuData[]>([]);
+  const { user, token } = useAuth();
+  const { t } = useTranslation();
+  const [menus, setMenus] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [menuToDelete, setMenuToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -101,16 +96,17 @@ export default function MyMenus() {
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return "Unknown";
+    if (!dateString) return t('myMenus.unknownDate');
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString("en-US", {
+      const locale = t('common.locale') || 'en-US';
+      return date.toLocaleDateString(locale, {
         year: "numeric",
         month: "short",
         day: "numeric",
       });
     } catch {
-      return "Unknown";
+      return t('myMenus.unknownDate');
     }
   };
 
@@ -124,7 +120,7 @@ export default function MyMenus() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-orange-600 mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading your menus...</p>
+          <p className="text-muted-foreground">{t('myMenus.loading')}</p>
         </div>
       </div>
     );
@@ -135,9 +131,9 @@ export default function MyMenus() {
       {/* Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">My Menus</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">{t('myMenus.title')}</h1>
           <p className="text-lg text-muted-foreground">
-            Manage and edit all your saved menus
+            {t('myMenus.subtitle')}
           </p>
         </div>
 
@@ -145,13 +141,13 @@ export default function MyMenus() {
           <Card className="border-2 border-dashed">
             <CardContent className="flex flex-col items-center justify-center py-16">
               <Package className="w-16 h-16 text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No menus yet</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('myMenus.noMenusTitle')}</h3>
               <p className="text-muted-foreground mb-6 text-center max-w-md">
-                Create your first menu to get started. You can create multiple menus for different occasions or locations.
+                {t('myMenus.noMenusDescription')}
               </p>
-              <Button onClick={() => navigate("/menu-builder")} className="bg-orange-600 hover:bg-orange-700">
+              <Button onClick={() => setIsCreateDialogOpen(true)} className="bg-orange-600 hover:bg-orange-700">
                 <Plus className="w-4 h-4 mr-2" />
-                Create Your First Menu
+                {t('myMenus.createFirstMenu')}
               </Button>
             </CardContent>
           </Card>
@@ -195,7 +191,7 @@ export default function MyMenus() {
                       onClick={() => navigate(`/menu-builder?menuId=${menu.menuId}`)}
                     >
                       <Edit className="w-4 h-4 mr-2" />
-                      Edit
+                      {t('myMenus.edit')}
                     </Button>
                     {menu.menuId && (
                       <Button
@@ -204,7 +200,7 @@ export default function MyMenus() {
                         onClick={() => window.open(getMenuUrl(menu.menuId), "_blank")}
                       >
                         <ExternalLink className="w-4 h-4 mr-2" />
-                        View
+                        {t('myMenus.view')}
                       </Button>
                     )}
                   </div>
@@ -219,22 +215,28 @@ export default function MyMenus() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t('myMenus.deleteConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the menu.
+              {t('myMenus.deleteConfirmDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setMenuToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setMenuToDelete(null)}>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteMenu}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              {t('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
+      {/* Create Menu Dialog */}
+      <CreateMenuDialog 
+        isOpen={isCreateDialogOpen} 
+        onClose={() => setIsCreateDialogOpen(false)} 
+      />
     </div>
   );
 }

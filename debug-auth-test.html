@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Authentication Debug Test</h1>
+    
+    <div class="container">
+        <h2>Token Information</h2>
+        <button onclick="showTokenInfo()">Show Token Info</button>
+        <div id="tokenInfo" class="result"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Test Debug Endpoint</h2>
+        <button onclick="testDebugEndpoint()">Test Debug Endpoint</button>
+        <div id="debugResult" class="result"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Test Menus Endpoint</h2>
+        <button onclick="testMenusEndpoint()">Test Menus Endpoint</button>
+        <div id="menusResult" class="result"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Full Diagnostic</h2>
+        <button onclick="runFullDiagnostic()">Run Full Diagnostic</button>
+        <div id="diagnosticResult" class="result"></div>
+    </div>
+
+    <script>
+        const projectId = "nyqfsuwxrzrfnrslpgfj";
+        
+        function showTokenInfo() {
+            const result = document.getElementById('tokenInfo');
+            const token = localStorage.getItem("access_token");
+            
+            if (!token) {
+                result.className = 'result error';
+                result.textContent = '❌ No token found in localStorage';
+                return;
+            }
+            
+            const info = {
+                exists: !!token,
+                length: token.length,
+                startsWithEyJ: token.startsWith('eyJ'),
+                endsWithEquals: token.endsWith('==='),
+                first20: token.substring(0, 20) + '...',
+                last20: '...' + token.substring(token.length - 20)
+            };
+            
+            result.className = 'result info';
+            result.textContent = JSON.stringify(info, null, 2);
+        }
+        
+        async function testDebugEndpoint() {
+            const result = document.getElementById('debugResult');
+            const token = localStorage.getItem("access_token");
+            
+            if (!token) {
+                result.className = 'result error';
+                result.textContent = '❌ No token available';
+                return;
+            }
+            
+            try {
+                result.className = 'result info';
+                result.textContent = '🔄 Testing debug endpoint...';
+                
+                const response = await fetch(
+                    `https://${projectId}.supabase.co/functions/v1/make-server-b6941cdd/debug-auth`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.textContent = `✅ Debug endpoint successful!\n\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    result.className = 'result error';
+                    result.textContent = `❌ Debug endpoint failed (${response.status})\n\n${JSON.stringify(data, null, 2)}`;
+                }
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = `❌ Network error: ${error.message}`;
+            }
+        }
+        
+        async function testMenusEndpoint() {
+            const result = document.getElementById('menusResult');
+            const token = localStorage.getItem("access_token");
+            
+            if (!token) {
+                result.className = 'result error';
+                result.textContent = '❌ No token available';
+                return;
+            }
+            
+            try {
+                result.className = 'result info';
+                result.textContent = '🔄 Testing menus endpoint...';
+                
+                const response = await fetch(
+                    `https://${projectId}.supabase.co/functions/v1/make-server-b6941cdd/menus`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                
+                const text = await response.text();
+                
+                if (response.ok) {
+                    const data = JSON.parse(text);
+                    result.className = 'result success';
+                    result.textContent = `✅ Menus endpoint successful!\n\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    result.className = 'result error';
+                    result.textContent = `❌ Menus endpoint failed (${response.status})\n\n${text}`;
+                }
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = `❌ Network error: ${error.message}`;
+            }
+        }
+        
+        async function runFullDiagnostic() {
+            const result = document.getElementById('diagnosticResult');
+            result.className = 'result info';
+            result.textContent = '🔄 Running full diagnostic...\n\n';
+            
+            // Show token info
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                result.className = 'result error';
+                result.textContent = '❌ No token found. Please log in first.';
+                return;
+            }
+            
+            result.textContent += '1. Token found in localStorage\n';
+            result.textContent += `2. Token length: ${token.length}\n`;
+            result.textContent += `3. Token format: ${token.startsWith('eyJ') ? 'Valid JWT format' : 'Invalid format'}\n\n`;
+            
+            // Test debug endpoint
+            try {
+                result.textContent += '4. Testing debug endpoint...\n';
+                const debugResponse = await fetch(
+                    `https://${projectId}.supabase.co/functions/v1/make-server-b6941cdd/debug-auth`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                
+                if (debugResponse.ok) {
+                    result.textContent += '   ✅ Debug endpoint successful\n';
+                } else {
+                    const debugData = await debugResponse.json();
+                    result.textContent += `   ❌ Debug endpoint failed: ${debugData.error}\n`;
+                }
+            } catch (error) {
+                result.textContent += `   ❌ Debug endpoint network error: ${error.message}\n`;
+            }
+            
+            // Test menus endpoint
+            try {
+                result.textContent += '5. Testing menus endpoint...\n';
+                const menusResponse = await fetch(
+                    `https://${projectId}.supabase.co/functions/v1/make-server-b6941cdd/menus`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                
+                if (menusResponse.ok) {
+                    result.textContent += '   ✅ Menus endpoint successful\n';
+                } else {
+                    const menusText = await menusResponse.text();
+                    result.textContent += `   ❌ Menus endpoint failed (${menusResponse.status}): ${menusText}\n`;
+                }
+            } catch (error) {
+                result.textContent += `   ❌ Menus endpoint network error: ${error.message}\n`;
+            }
+            
+            result.className = 'result success';
+            result.textContent += '\n✅ Diagnostic complete!';
+        }
+        
+        // Auto-run token info on load
+        window.onload = function() {
+            showTokenInfo();
+        };
+    </script>
+</body>
+</html>

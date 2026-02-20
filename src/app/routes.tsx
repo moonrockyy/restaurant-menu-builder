@@ -1,16 +1,20 @@
-import { createBrowserRouter } from "react-router";
+import { lazy } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom"; // Removed the extra "-dom"
 import Root from "./pages/Root";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
-import MenuBuilder from "./pages/MenuBuilder";
 import MenuView from "./pages/MenuView";
-import MyMenus from "./pages/MyMenus";
-import About from "./pages/About";
-import Contribute from "./pages/Contribute";
-import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+
+// Lazy load components
+const Landing = lazy(() => import("./pages/Landing"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const MyMenus = lazy(() => import("./pages/MyMenus"));
+const MenuBuilder = lazy(() => import("./pages/MenuBuilder"));
+const TemplateSelector = lazy(() => import("./pages/TemplateSelector"));
+const About = lazy(() => import("./pages/About"));
+const Contribute = lazy(() => import("./pages/Contribute"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function ProtectedDashboard() {
   return (
@@ -36,21 +40,29 @@ function ProtectedMyMenus() {
   );
 }
 
-export const router = createBrowserRouter([
+// Create router
+const router = createBrowserRouter([
   {
     path: "/",
-    Component: Root,
+    element: <Root />,
     children: [
-      { index: true, Component: Landing },
-      { path: "login", Component: Login },
-      { path: "signup", Component: Signup },
-      { path: "about", Component: About },
-      { path: "contribute", Component: Contribute },
-      { path: "dashboard", Component: ProtectedDashboard },
-      { path: "menu-builder", Component: ProtectedMenuBuilder },
-      { path: "my-menus", Component: ProtectedMyMenus },
-      { path: "menu/:slug", Component: MenuView },
-      { path: "*", Component: NotFound },
+      { index: true, element: <Landing /> },
+      { path: "login", element: <Login /> },
+      { path: "signup", element: <Signup /> },
+      { path: "about", element: <About /> },
+      { path: "contribute", element: <Contribute /> },
+      { path: "dashboard", element: <ProtectedDashboard /> },
+      { path: "template-selector", element: <TemplateSelector /> },
+      { path: "my-menus", element: <ProtectedMyMenus /> },
+      { path: "menu-builder", element: <ProtectedMenuBuilder /> },
+      { path: "menu/:slug", element: <MenuView /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
+
+function AppRouter() {
+  return <RouterProvider router={router} />;
+}
+
+export default AppRouter;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
@@ -19,10 +20,14 @@ import {
   ExternalLink,
   BarChart3,
   Clock,
-  CheckCircle2
+  CheckCircle2,
+  Settings,
+  Lock
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "../contexts/AuthContext";
+import CreateMenuDialog from "../components/CreateMenuDialog";
+import ManagementSection from "../components/ManagementSection";
 import type { MenuData } from "../types/menu";
 
 interface MenuStats {
@@ -34,11 +39,13 @@ interface MenuStats {
 
 export default function Dashboard() {
   const { user, token, logout } = useAuth();
+  const { t } = useTranslation();
   const [hasMenu, setHasMenu] = useState(false);
   const [menuData, setMenuData] = useState<MenuData | null>(null);
   const [menuStats, setMenuStats] = useState<MenuStats | null>(null);
   const [menuUrl, setMenuUrl] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -169,7 +176,7 @@ export default function Dashboard() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -184,15 +191,15 @@ export default function Dashboard() {
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">
-                Welcome back,{" "}
+                {t('dashboard.welcomeBack')}
                 <span className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
                   {user?.user_metadata?.name?.split(" ")[0] || "there"}!
                 </span>
               </h1>
               <p className="text-lg text-muted-foreground">
                 {hasMenu 
-                  ? `Manage your ${menuData?.businessName || "menu"} menu`
-                  : "Let's create something amazing together"}
+                  ? t('dashboard.manageMenu', { businessName: menuData?.businessName || "menu" })
+                  : t('dashboard.createTogether')}
               </p>
             </div>
             {hasMenu && menuUrl && (
@@ -211,7 +218,7 @@ export default function Dashboard() {
                   className="gap-2"
                 >
                   <Copy className="w-4 h-4" />
-                  Copy Link
+                  {t('dashboard.copyLink')}
                 </Button>
               </div>
             )}
@@ -223,33 +230,33 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <Card className="border-2 hover:border-orange-500/50 transition-all hover:shadow-lg">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Items</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('dashboard.totalItems')}</CardTitle>
                 <Package className="h-4 w-4 text-orange-600" />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{menuStats.totalItems}</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Menu items
+                  {t('dashboard.menuItems')}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-2 hover:border-blue-500/50 transition-all hover:shadow-lg">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Categories</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('dashboard.categories')}</CardTitle>
                 <Tag className="h-4 w-4 text-blue-600" />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{menuStats.categories}</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Different categories
+                  {t('dashboard.differentCategories')}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-2 hover:border-green-500/50 transition-all hover:shadow-lg">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg. Price</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('dashboard.avgPrice')}</CardTitle>
                 <TrendingUp className="h-4 w-4 text-green-600" />
               </CardHeader>
               <CardContent>
@@ -257,14 +264,14 @@ export default function Dashboard() {
                   ${menuStats.averagePrice.toFixed(2)}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Per item
+                  {t('dashboard.perItem')}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-2 hover:border-purple-500/50 transition-all hover:shadow-lg">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Completion</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('dashboard.completion')}</CardTitle>
                 <BarChart3 className="h-4 w-4 text-purple-600" />
               </CardHeader>
               <CardContent>
@@ -280,7 +287,7 @@ export default function Dashboard() {
           {/* Create/Edit Menu Card */}
           <Card 
             className="group relative overflow-hidden border-2 hover:border-orange-500 transition-all hover:shadow-xl cursor-pointer bg-gradient-to-br from-orange-50/50 to-orange-100/30 dark:from-orange-950/20 dark:to-orange-900/10"
-            onClick={() => navigate("/menu-builder")}
+            onClick={() => hasMenu ? navigate("/menu-builder") : setIsCreateDialogOpen(true)}
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-colors" />
             <CardHeader className="relative">
@@ -292,12 +299,12 @@ export default function Dashboard() {
                 )}
               </div>
               <CardTitle className="text-xl">
-                {hasMenu ? "Edit Your Menu" : "Create New Menu"}
+                {hasMenu ? t('dashboard.editMenu') : t('dashboard.createNewMenu')}
               </CardTitle>
               <CardDescription className="text-base">
                 {hasMenu 
-                  ? "Update and customize your existing menu"
-                  : "Start building your menu from beautiful templates"}
+                  ? t('dashboard.updateDescription')
+                  : t('dashboard.createDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent className="relative">
@@ -305,12 +312,12 @@ export default function Dashboard() {
                 {hasMenu ? (
                   <>
                     <Edit className="w-4 h-4 mr-2" />
-                    Edit Menu
+                    {t('dashboard.editMenuButton')}
                   </>
                 ) : (
                   <>
                     <Plus className="w-4 h-4 mr-2" />
-                    Get Started
+                    {t('dashboard.getStartedButton')}
                   </>
                 )}
               </Button>
@@ -327,15 +334,15 @@ export default function Dashboard() {
               <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
                 <FileText className="w-7 h-7 text-white" />
               </div>
-              <CardTitle className="text-xl">My Menus</CardTitle>
+              <CardTitle className="text-xl">{t('myMenus.title')}</CardTitle>
               <CardDescription className="text-base">
-                View and manage all your saved menus
+                {t('myMenus.subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent className="relative">
               <Button variant="outline" className="w-full border-2">
                 <FileText className="w-4 h-4 mr-2" />
-                View All Menus
+                {t('myMenus.viewAllMenus')}
               </Button>
             </CardContent>
           </Card>
@@ -352,15 +359,15 @@ export default function Dashboard() {
                   <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
                     <Eye className="w-7 h-7 text-white" />
                   </div>
-                  <CardTitle className="text-xl">Preview Menu</CardTitle>
+                  <CardTitle className="text-xl">{t('dashboard.previewMenu')}</CardTitle>
                   <CardDescription className="text-base">
-                    See how your menu looks to customers
+                    {t('dashboard.previewDescription')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="relative">
                   <Button variant="outline" className="w-full border-2">
                     <Eye className="w-4 h-4 mr-2" />
-                    View Preview
+                    {t('dashboard.viewPreview')}
                   </Button>
                 </CardContent>
               </Card>
@@ -373,9 +380,9 @@ export default function Dashboard() {
                     <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
                       <ExternalLink className="w-7 h-7 text-white" />
                     </div>
-                    <CardTitle className="text-xl">Public Menu</CardTitle>
+                    <CardTitle className="text-xl">{t('dashboard.publicMenu')}</CardTitle>
                     <CardDescription className="text-base">
-                      Share your menu with customers
+                      {t('dashboard.publicMenuDescription')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="relative space-y-3">
@@ -398,13 +405,24 @@ export default function Dashboard() {
                       onClick={() => window.open(menuUrl, "_blank")}
                     >
                       <ExternalLink className="w-4 h-4 mr-2" />
-                      Open Menu
+                      {t('dashboard.openMenu')}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-2"
+                      onClick={() => window.open(menuUrl, "_blank")}
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      {t('dashboard.closeMenu')}
                     </Button>
                   </CardContent>
                 </Card>
               )}
             </>
           )}
+
+          {/* Management System Card */}
+          <ManagementSection />
         </div>
 
         {/* Menu Overview */}
@@ -415,7 +433,7 @@ export default function Dashboard() {
                 <div>
                   <CardTitle className="text-2xl flex items-center gap-2">
                     <FileText className="w-6 h-6 text-orange-600" />
-                    Menu Overview
+                    {t('dashboard.menuOverview')}
                   </CardTitle>
                   <CardDescription className="mt-1">
                     {menuData.businessName}
@@ -432,7 +450,7 @@ export default function Dashboard() {
               )}
               {menuData.items && menuData.items.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-sm mb-3">Recent Items</h4>
+                  <h4 className="font-semibold text-sm mb-3">{t('dashboard.recentItems')}</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {menuData.items.slice(0, 6).map((item) => (
                       <div
@@ -459,7 +477,7 @@ export default function Dashboard() {
                       className="w-full mt-3"
                       onClick={() => navigate("/menu-builder")}
                     >
-                      View All {menuData.items.length} Items
+                      {t('dashboard.viewAll')} {menuData.items.length} {t('dashboard.items')}
                     </Button>
                   )}
                 </div>
@@ -475,8 +493,8 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-orange-600" />
-                  Getting Started
-                </CardTitle>
+                  {t('dashboard.proTips')}
+              </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start gap-3">
@@ -484,9 +502,9 @@ export default function Dashboard() {
                     <span className="text-white text-sm font-bold">1</span>
                   </div>
                   <div>
-                    <p className="font-medium">Choose a Template</p>
+                    <p className="font-medium">{t('dashboard.chooseTemplate')}</p>
                     <p className="text-sm text-muted-foreground">
-                      Select from beautiful pre-designed templates that match your style
+                      {t('dashboard.templateDescription')}
                     </p>
                   </div>
                 </div>
@@ -495,9 +513,9 @@ export default function Dashboard() {
                     <span className="text-white text-sm font-bold">2</span>
                   </div>
                   <div>
-                    <p className="font-medium">Add Menu Items</p>
+                    <p className="font-medium">{t('dashboard.createFromScratch')}</p>
                     <p className="text-sm text-muted-foreground">
-                      Add your dishes with descriptions, prices, and categories
+                      {t('dashboard.scratchDescription')}
                     </p>
                   </div>
                 </div>
@@ -506,9 +524,9 @@ export default function Dashboard() {
                     <span className="text-white text-sm font-bold">3</span>
                   </div>
                   <div>
-                    <p className="font-medium">Customize & Share</p>
+                    <p className="font-medium">{t('dashboard.customize')}</p>
                     <p className="text-sm text-muted-foreground">
-                      Customize colors, fonts, and share your menu with customers
+                      {t('dashboard.customizeDescription')}
                     </p>
                   </div>
                 </div>
@@ -519,8 +537,8 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="w-5 h-5 text-orange-600" />
-                  Quick Actions
-                </CardTitle>
+                  {t('dashboard.quickActions')}
+              </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button
@@ -529,7 +547,7 @@ export default function Dashboard() {
                   onClick={() => navigate("/menu-builder")}
                 >
                   <Edit className="w-4 h-4 mr-2" />
-                  Edit Menu Items
+                  {t('dashboard.editMenu')}
                 </Button>
                 <Button
                   variant="outline"
@@ -537,7 +555,7 @@ export default function Dashboard() {
                   onClick={() => navigate("/menu-builder?view=preview")}
                 >
                   <Eye className="w-4 h-4 mr-2" />
-                  Preview Menu
+                  {t('dashboard.view')} Menu
                 </Button>
                 {menuUrl && (
                   <Button
@@ -546,7 +564,7 @@ export default function Dashboard() {
                     onClick={handleShareMenu}
                   >
                     <Share2 className="w-4 h-4 mr-2" />
-                    Share Menu Link
+                    {t('dashboard.share')} Menu Link
                   </Button>
                 )}
               </CardContent>
@@ -558,34 +576,34 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-orange-600" />
-                Pro Tips
+                {t('dashboard.proTips')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-sm">Add Descriptions</p>
+                  <p className="font-medium text-sm">{t('dashboard.addDescriptions')}</p>
                   <p className="text-xs text-muted-foreground">
-                    Detailed descriptions help customers make better choices
+                    {t('dashboard.addDescriptions')}
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-sm">Organize by Categories</p>
+                  <p className="font-medium text-sm">{t('dashboard.organizeCategories')}</p>
                   <p className="text-xs text-muted-foreground">
-                    Group items logically for easy navigation
+                    {t('dashboard.organizeCategories')}
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-sm">Keep Prices Updated</p>
+                  <p className="font-medium text-sm">{t('dashboard.keepPricesUpdated')}</p>
                   <p className="text-xs text-muted-foreground">
-                    Regular updates ensure accurate pricing for customers
+                    {t('dashboard.keepPricesUpdated')}
                   </p>
                 </div>
               </div>
@@ -593,6 +611,15 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
+      
+      {/* Management System Section */}
+      {/* <ManagementSection /> */}
+      
+      {/* Create Menu Dialog */}
+      <CreateMenuDialog 
+        isOpen={isCreateDialogOpen} 
+        onClose={() => setIsCreateDialogOpen(false)} 
+      />
     </div>
   );
 }

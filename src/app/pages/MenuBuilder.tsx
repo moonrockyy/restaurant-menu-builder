@@ -9,9 +9,13 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Menu, ArrowLeft, Plus, Trash2, Save, Share2, Image, Settings } from "lucide-react";
 import { toast } from "sonner";
-import { templates, type Template, type MenuData, type MenuItem, type BackgroundSettings, type CustomCategory } from "../types/menu";
+import { templates as oldTemplates, type Template, type MenuData, type MenuItem, type BackgroundSettings, type CustomCategory } from "../types/menu";
+import { templates as newTemplates, getTemplateById } from "../../data/templates";
+import { professionalTemplates, getProfessionalTemplateById } from "../../data/professional-templates";
 import { TemplateSelector } from "../components/TemplateSelector";
 import { MenuPreview } from "../components/MenuPreview";
+import { EditableMenuPreview } from "../components/EditableMenuPreview";
+import { ProfessionalMenuPreview } from "../../components/ProfessionalMenuPreview";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function MenuBuilder() {
@@ -32,6 +36,8 @@ export default function MenuBuilder() {
   const [showItemDialog, setShowItemDialog] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [useProfessionalPreview, setUseProfessionalPreview] = useState(true);
+  const [useEditablePreview, setUseEditablePreview] = useState(false);
   const [shareableId, setShareableId] = useState<string | null>(null);
   const [showBackgroundDialog, setShowBackgroundDialog] = useState(false);
   const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>({
@@ -60,11 +66,239 @@ export default function MenuBuilder() {
   }, [searchParams, authLoading]);
 
   useEffect(() => {
+    const templateParam = searchParams.get("template");
+    if (templateParam && !loading && !authLoading) {
+      // Check both new and professional templates
+      let template = getTemplateById(templateParam);
+      let profTemplate = getProfessionalTemplateById(templateParam);
+      
+      if (template) {
+        // Convert to Template format for selector
+        const compatibleTemplate: Template = {
+          id: template.id,
+          name: template.name,
+          description: template.description,
+          primaryColor: template.menuData.restaurant.primaryColor,
+          backgroundColor: template.menuData.restaurant.secondaryColor,
+          textColor: "#FFFFFF",
+          accentColor: template.menuData.restaurant.primaryColor,
+          style: "modern" as const,
+          fontFamily: template.menuData.restaurant.fontFamily,
+          layout: "single-column" as const,
+          headerStyle: "modern" as const,
+          categoryStyle: "underline" as const,
+          itemStyle: "simple" as const,
+          decorativeElements: {
+            borders: false,
+            dividers: true,
+            icons: false,
+            patterns: false
+          },
+          backgroundPattern: "none" as const
+        };
+        
+        setSelectedTemplate(compatibleTemplate);
+        
+        // Convert template menu data to existing format
+        const convertedItems: MenuItem[] = [];
+        template.menuData.categories.forEach(category => {
+          category.items.forEach(item => {
+            convertedItems.push({
+              id: item.id,
+              name: item.name,
+              description: item.description,
+              price: item.price,
+              category: category.id,
+              customCategory: category.name
+            });
+          });
+        });
+
+        setMenuData({
+          templateId: template.id,
+          businessName: template.menuData.restaurant.name,
+          businessDescription: template.menuData.restaurant.description,
+          primaryColor: template.menuData.restaurant.primaryColor,
+          items: convertedItems,
+        });
+        setStep("editor");
+      } else if (profTemplate) {
+        // Convert professional template to Template format
+        const compatibleTemplate: Template = {
+          id: profTemplate.id,
+          name: profTemplate.name,
+          description: profTemplate.description,
+          primaryColor: profTemplate.menuData.restaurant.primaryColor,
+          backgroundColor: profTemplate.menuData.restaurant.secondaryColor,
+          textColor: "#FFFFFF",
+          accentColor: profTemplate.menuData.restaurant.primaryColor,
+          style: "modern" as const,
+          fontFamily: profTemplate.menuData.restaurant.fontFamily,
+          layout: "single-column" as const,
+          headerStyle: "modern" as const,
+          categoryStyle: "underline" as const,
+          itemStyle: "simple" as const,
+          decorativeElements: {
+            borders: false,
+            dividers: true,
+            icons: false,
+            patterns: false
+          },
+          backgroundPattern: "none" as const
+        };
+        
+        setSelectedTemplate(compatibleTemplate);
+        
+        // Convert template menu data to existing format
+        const convertedItems: MenuItem[] = [];
+        profTemplate.menuData.categories.forEach(category => {
+          category.items.forEach(item => {
+            convertedItems.push({
+              id: item.id,
+              name: item.name,
+              description: item.description,
+              price: item.price,
+              category: category.id,
+              customCategory: category.name
+            });
+          });
+        });
+
+        setMenuData({
+          templateId: profTemplate.id,
+          businessName: profTemplate.menuData.restaurant.name,
+          businessDescription: profTemplate.menuData.restaurant.description,
+          primaryColor: profTemplate.menuData.restaurant.primaryColor,
+          items: convertedItems,
+        });
+        setStep("editor");
+      }
+    }
+  }, [searchParams, loading, authLoading]);
+
+  useEffect(() => {
     const viewMode = searchParams.get("view");
     if (viewMode === "preview") {
       setShowPreview(true);
     }
   }, [searchParams]);
+
+  const handleTemplateSelect = (template: Template) => {
+    // Check if this is a new template (from our data/templates.ts)
+    const newTemplate = getTemplateById(template.id);
+    const profTemplate = getProfessionalTemplateById(template.id);
+    
+    if (newTemplate) {
+      // Convert new template format to old format for compatibility
+      const compatibleTemplate: Template = {
+        id: newTemplate.id,
+        name: newTemplate.name,
+        description: newTemplate.description,
+        primaryColor: newTemplate.menuData.restaurant.primaryColor,
+        backgroundColor: newTemplate.menuData.restaurant.secondaryColor,
+        textColor: "#FFFFFF",
+        accentColor: newTemplate.menuData.restaurant.primaryColor,
+        style: "modern" as const,
+        fontFamily: newTemplate.menuData.restaurant.fontFamily,
+        layout: "single-column" as const,
+        headerStyle: "modern" as const,
+        categoryStyle: "underline" as const,
+        itemStyle: "simple" as const,
+        decorativeElements: {
+          borders: false,
+          dividers: true,
+          icons: false,
+          patterns: false
+        },
+        backgroundPattern: "none" as const
+      };
+
+      setSelectedTemplate(compatibleTemplate);
+      
+      // Convert template menu data to existing format
+      const convertedItems: MenuItem[] = [];
+      newTemplate.menuData.categories.forEach(category => {
+        category.items.forEach(item => {
+          convertedItems.push({
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            category: category.id,
+            customCategory: category.name
+          });
+        });
+      });
+
+      setMenuData({
+        templateId: newTemplate.id,
+        businessName: newTemplate.menuData.restaurant.name,
+        businessDescription: newTemplate.menuData.restaurant.description,
+        primaryColor: newTemplate.menuData.restaurant.primaryColor,
+        items: convertedItems,
+      });
+    } else if (profTemplate) {
+      // Convert professional template format to old format for compatibility
+      const compatibleTemplate: Template = {
+        id: profTemplate.id,
+        name: profTemplate.name,
+        description: profTemplate.description,
+        primaryColor: profTemplate.menuData.restaurant.primaryColor,
+        backgroundColor: profTemplate.menuData.restaurant.secondaryColor,
+        textColor: "#FFFFFF",
+        accentColor: profTemplate.menuData.restaurant.primaryColor,
+        style: "modern" as const,
+        fontFamily: profTemplate.menuData.restaurant.fontFamily,
+        layout: "single-column" as const,
+        headerStyle: "modern" as const,
+        categoryStyle: "underline" as const,
+        itemStyle: "simple" as const,
+        decorativeElements: {
+          borders: false,
+          dividers: true,
+          icons: false,
+          patterns: false
+        },
+        backgroundPattern: "none" as const
+      };
+
+      setSelectedTemplate(compatibleTemplate);
+      
+      // Convert template menu data to existing format
+      const convertedItems: MenuItem[] = [];
+      profTemplate.menuData.categories.forEach(category => {
+        category.items.forEach(item => {
+          convertedItems.push({
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            category: category.id,
+            customCategory: category.name
+          });
+        });
+      });
+
+      setMenuData({
+        templateId: profTemplate.id,
+        businessName: profTemplate.menuData.restaurant.name,
+        businessDescription: profTemplate.menuData.restaurant.description,
+        primaryColor: profTemplate.menuData.restaurant.primaryColor,
+        items: convertedItems,
+      });
+    } else {
+      // Use old template as-is
+      setSelectedTemplate(template);
+      setMenuData({
+        templateId: template.id,
+        businessName: user?.user_metadata?.businessName || "",
+        businessDescription: "",
+        primaryColor: template.primaryColor,
+        items: [],
+      });
+    }
+    setStep("editor");
+  };
 
   const checkAuthAndLoadMenu = async () => {
     console.log('MenuBuilder: Checking authentication...');
@@ -95,7 +329,7 @@ export default function MenuBuilder() {
         if (response.ok) {
           const data = await response.json();
           if (data.menu) {
-            const template = templates.find((t) => t.id === data.menu.templateId);
+            const template = oldTemplates.find((t: Template) => t.id === data.menu.templateId);
             if (template) {
               setSelectedTemplate(template);
               setMenuData(data.menu);
@@ -114,52 +348,75 @@ export default function MenuBuilder() {
       } else {
         // Load latest menu if no menuId specified
         console.log('MenuBuilder: Loading latest menu...');
-        const response = await fetch(
-          `https://nyqfsuwxrzrfnrslpgfj.supabase.co/functions/v1/make-server-b6941cdd/menus`,
-          {
-            headers: {
-              Authorization: `Bearer ${validToken}`,
-            },
-          }
-        );
+        
+        try {
+          const response = await fetch(
+            `https://nyqfsuwxrzrfnrslpgfj.supabase.co/functions/v1/make-server-b6941cdd/menus`,
+            {
+              headers: {
+                Authorization: `Bearer ${validToken}`,
+              },
+            }
+          );
 
-        console.log('MenuBuilder: Menus API response status:', response.status);
-        console.log('MenuBuilder: Menus API response ok:', response.ok);
+          console.log('MenuBuilder: Menus API response status:', response.status);
+          console.log('MenuBuilder: Menus API response ok:', response.ok);
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log('MenuBuilder: Menus data received:', data);
-          
-          if (data.menus && data.menus.length > 0) {
-            // Get the most recent menu
-            const latestMenu = data.menus[0];
-            console.log('MenuBuilder: Latest menu found:', latestMenu);
+          if (response.ok) {
+            const data = await response.json();
+            console.log('MenuBuilder: Menus data received:', data);
             
-            const template = templates.find((t) => t.id === latestMenu.templateId);
-            if (template) {
-              setSelectedTemplate(template);
-              setMenuData(latestMenu);
-              setBackgroundSettings(latestMenu.backgroundSettings || {
-                type: "template",
-                opacity: 100,
-                size: "cover",
-                position: "center",
-                blur: 0,
-                brightness: 100,
-              });
-              setStep("editor");
+            if (data.menus && data.menus.length > 0) {
+              // Get the most recent menu
+              const latestMenu = data.menus[0];
+              console.log('MenuBuilder: Latest menu found:', latestMenu);
+              
+              const template = oldTemplates.find((t: Template) => t.id === latestMenu.templateId);
+              if (template) {
+                setSelectedTemplate(template);
+                setMenuData(latestMenu);
+                setBackgroundSettings(latestMenu.backgroundSettings || {
+                  type: "template",
+                  opacity: 100,
+                  size: "cover",
+                  position: "center",
+                  blur: 0,
+                  brightness: 100,
+                });
+                setStep("editor");
+              }
+            } else {
+              console.log('MenuBuilder: No menus found for user');
             }
           } else {
-            console.log('MenuBuilder: No menus found for user');
+            const errorText = await response.text();
+            console.error('MenuBuilder: Menus API error:', {
+              status: response.status,
+              statusText: response.statusText,
+              body: errorText
+            });
+            
+            // Enhanced error handling with specific messages
+            let errorMessage = `Failed to load menus (${response.status})`;
+            
+            if (response.status === 401) {
+              errorMessage = "Authentication failed. Please try logging out and logging back in.";
+              // Run diagnostic to help debug
+              if (window.authDebug) {
+                console.log('🔍 Running authentication diagnostic...');
+                window.authDebug.runFullDiagnostic();
+              }
+            } else if (response.status === 403) {
+              errorMessage = "Access forbidden. You don't have permission to access these menus.";
+            } else if (response.status >= 500) {
+              errorMessage = "Server error. Please try again later.";
+            }
+            
+            toast.error(errorMessage);
           }
-        } else {
-          const errorText = await response.text();
-          console.error('MenuBuilder: Menus API error:', {
-            status: response.status,
-            statusText: response.statusText,
-            body: errorText
-          });
-          toast.error(`Failed to load menus: ${response.status} ${response.statusText}`);
+        } catch (fetchError) {
+          console.error('MenuBuilder: Network error while fetching menus:', fetchError);
+          toast.error("Network error. Please check your connection and try again.");
         }
       }
     } catch (error) {
@@ -167,18 +424,6 @@ export default function MenuBuilder() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleTemplateSelect = (template: Template) => {
-    setSelectedTemplate(template);
-    setMenuData({
-      templateId: template.id,
-      businessName: user?.user_metadata?.businessName || "",
-      businessDescription: "",
-      primaryColor: template.primaryColor,
-      items: [],
-    });
-    setStep("editor");
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -504,7 +749,7 @@ export default function MenuBuilder() {
       <div className="container mx-auto px-4 py-8">
         {step === "template" && (
           <TemplateSelector
-            templates={templates}
+            templates={oldTemplates}
             onSelectTemplate={handleTemplateSelect}
           />
         )}
@@ -660,11 +905,46 @@ export default function MenuBuilder() {
 
               {/* Preview Panel */}
               <div className="lg:col-span-2">
-                <MenuPreview 
-                  template={selectedTemplate} 
-                  menuData={menuData} 
-                  backgroundSettings={backgroundSettings}
-                />
+                {useEditablePreview ? (
+                  <EditableMenuPreview 
+                    template={selectedTemplate} 
+                    menuData={menuData} 
+                    backgroundSettings={backgroundSettings}
+                    onMenuDataChange={setMenuData}
+                  />
+                ) : useProfessionalPreview ? (
+                  <ProfessionalMenuPreview 
+                    template={selectedTemplate} 
+                    menuData={menuData} 
+                  />
+                ) : (
+                  <MenuPreview 
+                    template={selectedTemplate} 
+                    menuData={menuData} 
+                    backgroundSettings={backgroundSettings}
+                  />
+                )}
+                <div className="mt-4 flex justify-center gap-2">
+                  <Button
+                    onClick={() => {
+                      setUseEditablePreview(!useEditablePreview);
+                      setUseProfessionalPreview(false);
+                    }}
+                    variant="outline"
+                    size="sm"
+                  >
+                    {useEditablePreview ? "Show Simple Preview" : "Show Editable Preview"}
+                  </Button>
+                  {!useEditablePreview && (
+                    <Button
+                      onClick={() => setUseProfessionalPreview(!useProfessionalPreview)}
+                      variant="outline"
+                      size="sm"
+                    >
+                      {useProfessionalPreview ? "Show Simple Preview" : "Show Professional Preview"}
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

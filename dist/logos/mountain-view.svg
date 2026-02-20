@@ -1,0 +1,9 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Mountain peak -->
+  <path d="M24 8 L16 32 L32 32 Z" fill="#059669"/>
+  <path d="M24 8 L8 36 L40 36 Z" fill="#047857"/>
+  <!-- Snow cap -->
+  <path d="M24 8 L20 14 L28 14 Z" fill="#FFFFFF"/>
+  <!-- Mountain details -->
+  <path d="M16 32 L24 20 L32 32" stroke="#0D9488" stroke-width="1" fill="none"/>
+</svg>

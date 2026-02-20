@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../components/ui/accordion";
@@ -6,6 +8,9 @@ import { Coffee, Utensils, ChefHat, Star, Quote, Building, Github, HelpCircle, M
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 export default function Landing() {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -13,21 +18,20 @@ export default function Landing() {
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           <div className="space-y-8">
             <h2 className="text-5xl md:text-6xl font-bold text-foreground leading-tight">
-              Create Beautiful Menus for Your Business
+              {t('landing.hero.title')}
             </h2>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              Professional menu templates for restaurants, cafes, bars, and more. 
-              No design skills needed. Get started in minutes.
+              {t('landing.hero.subtitle')}
             </p>
             <div className="flex gap-4">
-              <Link to="/signup">
+              <Link to={user ? "/dashboard" : "/signup"}>
                 <Button size="lg" className="bg-orange-600 hover:bg-orange-700 hover:scale-105 transition-transform duration-300">
-                  Start Creating Free
+                  {user ? t('landing.hero.goToDashboard') : t('landing.hero.startCreating')}
                 </Button>
               </Link>
-              <Link to="/login">
+              <Link to={user ? "/menu-builder" : "/login"}>
                 <Button size="lg" variant="outline" className="hover:scale-105 transition-transform duration-300">
-                  View Templates
+                  {user ? t('landing.hero.createMenu') : t('landing.hero.viewTemplates')}
                 </Button>
               </Link>
             </div>
@@ -46,10 +50,10 @@ export default function Landing() {
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h3 className="text-3xl font-light text-foreground mb-4">
-            Simple Tools for Beautiful Menus
+            {t('landing.features.title')}
           </h3>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Clean templates designed for restaurants and cafes
+            {t('landing.features.subtitle')}
           </p>
         </div>
 
@@ -58,9 +62,9 @@ export default function Landing() {
             <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mb-6 mx-auto transition-all duration-300 group-hover:scale-110 group-hover:bg-stone-200">
               <Utensils className="w-7 h-7 text-stone-700 transition-transform duration-300 group-hover:rotate-12" />
             </div>
-            <h4 className="text-lg font-medium text-foreground mb-3 transition-colors duration-300 group-hover:text-orange-600">Restaurant Menus</h4>
+            <h4 className="text-lg font-medium text-foreground mb-3 transition-colors duration-300 group-hover:text-orange-600">{t('landing.features.restaurantMenus.title')}</h4>
             <p className="text-muted-foreground text-sm leading-relaxed transition-opacity duration-300 group-hover:opacity-80">
-              Clean layouts for fine dining and casual restaurants
+              {t('landing.features.restaurantMenus.description')}
             </p>
           </div>
 
@@ -68,9 +72,9 @@ export default function Landing() {
             <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mb-6 mx-auto transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-100">
               <Coffee className="w-7 h-7 text-amber-700 transition-transform duration-300 group-hover:rotate-12" />
             </div>
-            <h4 className="text-lg font-medium text-foreground mb-3 transition-colors duration-300 group-hover:text-orange-600">Cafe Menus</h4>
+            <h4 className="text-lg font-medium text-foreground mb-3 transition-colors duration-300 group-hover:text-orange-600">{t('landing.features.cafeMenus.title')}</h4>
             <p className="text-muted-foreground text-sm leading-relaxed transition-opacity duration-300 group-hover:opacity-80">
-              Warm designs perfect for coffee shops and bakeries
+              {t('landing.features.cafeMenus.description')}
             </p>
           </div>
 
@@ -78,9 +82,9 @@ export default function Landing() {
             <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-6 mx-auto transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-100">
               <ChefHat className="w-7 h-7 text-emerald-700 transition-transform duration-300 group-hover:rotate-12" />
             </div>
-            <h4 className="text-lg font-medium text-foreground mb-3 transition-colors duration-300 group-hover:text-orange-600">Custom Style</h4>
+            <h4 className="text-lg font-medium text-foreground mb-3 transition-colors duration-300 group-hover:text-orange-600">{t('landing.features.customStyle.title')}</h4>
             <p className="text-muted-foreground text-sm leading-relaxed transition-opacity duration-300 group-hover:opacity-80">
-              Personalize colors and fonts to match your brand
+              {t('landing.features.customStyle.description')}
             </p>
           </div>
         </div>
@@ -89,9 +93,9 @@ export default function Landing() {
          {/* Trusted Companies Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-foreground mb-4">Trusted by Leading Brands</h3>
+          <h3 className="text-3xl font-bold text-foreground mb-4">{t('landing.trusted.title')}</h3>
           <p className="text-lg text-muted-foreground mb-8">
-            Join the restaurants and cafes that trust MenuCraft for their digital menu needs
+            {t('landing.trusted.subtitle')}
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
@@ -122,7 +126,7 @@ export default function Landing() {
         </div>
         <div className="mt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            <span className="font-bold text-foreground">5,000+</span> restaurants and cafes worldwide trust MenuCraft
+            <span className="font-bold text-foreground">5,000+</span> {t('landing.trusted.stats')}
           </p>
         </div>
       </section>
@@ -133,13 +137,13 @@ export default function Landing() {
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="bg-gradient-to-r from-orange-600 to-orange-500 rounded-2xl p-12 text-center text-white">
-          <h3 className="text-4xl font-bold mb-4">Ready to Get Started?</h3>
+          <h3 className="text-4xl font-bold mb-4">{t('landing.cta.title')}</h3>
           <p className="text-xl mb-8 text-orange-50">
-            Join thousands of restaurants and cafes creating beautiful menus
+            {t('landing.cta.subtitle')}
           </p>
-          <Link to="/signup">
+          <Link to={user ? "/dashboard" : "/signup"}>
             <Button size="lg" variant="secondary" className="bg-white text-orange-600 hover:bg-slate-50">
-              Create Your Menu Now
+              {user ? t('landing.cta.goToDashboard') : t('landing.cta.createMenuNow')}
             </Button>
           </Link>
         </div>
@@ -148,9 +152,9 @@ export default function Landing() {
       {/* Testimonials Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h3 className="text-4xl font-bold text-foreground mb-4">Loved by Thousands</h3>
+          <h3 className="text-4xl font-bold text-foreground mb-4">{t('landing.testimonials.title')}</h3>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            See what restaurant owners are saying about MenuCraft
+            {t('landing.testimonials.subtitle')}
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
@@ -169,15 +173,15 @@ export default function Landing() {
                 <Star className="w-5 h-5 fill-orange-400 text-orange-400" />
               </div>
               <blockquote className="text-foreground mb-6 leading-relaxed">
-                "MenuCraft transformed our restaurant's online presence. The Apple-inspired templates are stunning and our customers love the professional look!"
+                "{t('landing.testimonials.sarah.quote')}"
               </blockquote>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
                   <span className="text-lg font-bold text-orange-600">SC</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground">Sarah Chen</h4>
-                  <p className="text-sm text-muted-foreground">Owner, The Golden Dragon</p>
+                  <h4 className="font-semibold text-foreground">{t('landing.testimonials.sarah.name')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('landing.testimonials.sarah.role')}</p>
                 </div>
               </div>
             </CardContent>
@@ -198,15 +202,15 @@ export default function Landing() {
                 <Star className="w-5 h-5 fill-blue-400 text-blue-400" />
               </div>
               <blockquote className="text-foreground mb-6 leading-relaxed">
-                "The custom background feature is a game-changer. Our customers can now upload their own images and create unique branded experiences that stand out."
+                "{t('landing.testimonials.mike.quote')}"
               </blockquote>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                   <span className="text-lg font-bold text-blue-600">MR</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground">Mike Rodriguez</h4>
-                  <p className="text-sm text-muted-foreground">CEO, Urban Grind Coffee Co.</p>
+                  <h4 className="font-semibold text-foreground">{t('landing.testimonials.mike.name')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('landing.testimonials.mike.role')}</p>
                 </div>
               </div>
             </CardContent>
@@ -227,15 +231,15 @@ export default function Landing() {
                 <Star className="w-5 h-5 fill-green-400 text-green-400" />
               </div>
               <blockquote className="text-foreground mb-6 leading-relaxed">
-                "The Apple-inspired templates are absolutely gorgeous. Our menu looks more professional than ever, and our customers notice the quality difference."
+                "{t('landing.testimonials.emily.quote')}"
               </blockquote>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
                   <span className="text-lg font-bold text-green-600">EW</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground">Emily Watson</h4>
-                  <p className="text-sm text-muted-foreground">Head Chef, Bella Vista Restaurant</p>
+                  <h4 className="font-semibold text-foreground">{t('landing.testimonials.emily.name')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('landing.testimonials.emily.role')}</p>
                 </div>
               </div>
             </CardContent>
@@ -443,9 +447,9 @@ export default function Landing() {
               <Coffee className="w-8 h-8 text-orange-600" />
             </div>
           </div>
-          <h3 className="text-3xl font-bold text-foreground mb-3">Enjoying MenuCraft?</h3>
+          <h3 className="text-3xl font-bold text-foreground mb-3">{t('landing.coffee.title')}</h3>
           <p className="text-lg text-muted-foreground mb-6 max-w-md mx-auto">
-            If you find this tool helpful, consider buying me a coffee to support continued development
+            {t('landing.coffee.subtitle')}
           </p>
           <a
             href="https://buymeacoffee.com"
@@ -455,7 +459,7 @@ export default function Landing() {
           >
             <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white">
               <Coffee className="w-5 h-5 mr-2" />
-              Buy Me a Coffee
+              {t('landing.coffee.button')}
             </Button>
           </a>
         </div>
@@ -463,9 +467,9 @@ export default function Landing() {
         {/* FAQ Section */}
       <section className="container mx-auto px-4 py-16 bg-card">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-foreground mb-4">Frequently Asked Questions</h3>
+          <h3 className="text-3xl font-bold text-foreground mb-4">{t('landing.faq.title')}</h3>
           <p className="text-lg text-muted-foreground mb-8">
-            Everything you need to know about MenuCraft
+            {t('landing.faq.subtitle')}
           </p>
         </div>
         
@@ -475,14 +479,12 @@ export default function Landing() {
               <AccordionTrigger className="text-left">
                 <div className="flex items-center gap-3">
                   <HelpCircle className="w-5 h-5 text-orange-600" />
-                  <span className="font-semibold">What is MenuCraft?</span>
+                  <span className="font-semibold">{t('landing.faq.q1.question')}</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  MenuCraft is a professional menu builder designed specifically for restaurants, cafes, and food service businesses. 
-                  Create beautiful, digital menus that your customers can access instantly on their phones. 
-                  No design skills required - choose from our professional templates and customize to match your brand.
+                  {t('landing.faq.q1.answer')}
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -491,14 +493,12 @@ export default function Landing() {
               <AccordionTrigger className="text-left">
                 <div className="flex items-center gap-3">
                   <Zap className="w-5 h-5 text-orange-600" />
-                  <span className="font-semibold">How quickly can I create a menu?</span>
+                  <span className="font-semibold">{t('landing.faq.q2.question')}</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  You can create a professional menu in under 5 minutes! Simply choose a template, add your menu items, 
-                  set your prices, and you're ready to go. Our intuitive interface makes it easy to organize 
-                  categories, descriptions, and pricing all in one place.
+                  {t('landing.faq.q2.answer')}
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -507,14 +507,12 @@ export default function Landing() {
               <AccordionTrigger className="text-left">
                 <div className="flex items-center gap-3">
                   <MessageSquare className="w-5 h-5 text-orange-600" />
-                  <span className="font-semibold">Can customers access my menu offline?</span>
+                  <span className="font-semibold">{t('landing.faq.q3.question')}</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Yes! When you generate a shareable link, customers can save your menu to their home screen for 
-                  instant offline access. This is perfect for areas with poor internet connectivity or for customers who 
-                  want quick access to your menu without using data.
+                  {t('landing.faq.q3.answer')}
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -523,14 +521,12 @@ export default function Landing() {
               <AccordionTrigger className="text-left">
                 <div className="flex items-center gap-3">
                   <Shield className="w-5 h-5 text-orange-600" />
-                  <span className="font-semibold">Is my data secure?</span>
+                  <span className="font-semibold">{t('landing.faq.q4.question')}</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Absolutely. We use industry-standard encryption and secure servers to protect your menu data. 
-                  Only you and authorized staff can access and modify your menus. Regular backups ensure your 
-                  information is never lost.
+                  {t('landing.faq.q4.answer')}
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -539,13 +535,12 @@ export default function Landing() {
               <AccordionTrigger className="text-left">
                 <div className="flex items-center gap-3">
                   <Users className="w-5 h-5 text-orange-600" />
-                  <span className="font-semibold">Can I manage multiple restaurants?</span>
+                  <span className="font-semibold">{t('landing.faq.q5.question')}</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Yes! MenuCraft supports multiple restaurant locations under one account. Each location can have its own 
-                  unique menu, branding, and shareable link. Perfect for restaurant groups or franchises.
+                  {t('landing.faq.q5.answer')}
                 </p>
               </AccordionContent>
             </AccordionItem>

@@ -1,7 +1,9 @@
 import { Link } from "react-router";
-import { Github, Twitter, Mail, Heart } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Github, Send, Mail, Heart } from "lucide-react";
 
 export default function Footer() {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -10,54 +12,30 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">MenuCraft</h3>
+            <h3 className="text-lg font-semibold text-foreground">{t('footer.brand')}</h3>
             <p className="text-sm text-muted-foreground">
-              Create beautiful, professional restaurant menus with ease. 
-              Design, customize, and share your culinary vision.
+              {t('footer.brandDescription')}
             </p>
           </div>
 
           {/* Product Links */}
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">Product</h4>
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">{t('footer.product')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link 
                   to="/" 
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Home
+                  {t('footer.home')}
                 </Link>
               </li>
-              <li>
-                <Link 
-                  to="/menu-builder" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Menu Builder
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/my-menus" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  My Menus
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company Links */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">Company</h4>
-            <ul className="space-y-2">
               <li>
                 <Link 
                   to="/about" 
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  About Us
+                  {t('footer.about')}
                 </Link>
               </li>
               <li>
@@ -65,7 +43,30 @@ export default function Footer() {
                   to="/contribute" 
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Contribute
+                  {t('footer.contribute')}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company Links */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">{t('footer.company')}</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link 
+                  to="/dashboard" 
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t('footer.dashboard')}
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/my-menus" 
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t('footer.myMenus')}
                 </Link>
               </li>
               <li>
@@ -73,7 +74,7 @@ export default function Footer() {
                   href="#" 
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Privacy Policy
+                  {t('footer.terms')}
                 </a>
               </li>
               <li>
@@ -81,7 +82,15 @@ export default function Footer() {
                   href="#" 
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Terms of Service
+                  {t('footer.privacy')}
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="#" 
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t('footer.contact')}
                 </a>
               </li>
             </ul>
@@ -89,7 +98,7 @@ export default function Footer() {
 
           {/* Connect Section */}
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">Connect</h4>
+            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">{t('footer.connect')}</h4>
             <div className="flex space-x-4">
               <a 
                 href="https://github.com" 
@@ -101,13 +110,13 @@ export default function Footer() {
                 <Github className="h-5 w-5" />
               </a>
               <a 
-                href="https://twitter.com" 
+                href="https://t.me" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Twitter"
+                aria-label="Telegram"
               >
-                <Twitter className="h-5 w-5" />
+                <Send className="h-5 w-5" />
               </a>
               <a 
                 href="mailto:contact@menucraft.com" 
@@ -118,20 +127,20 @@ export default function Footer() {
               </a>
             </div>
             <p className="text-sm text-muted-foreground">
-              Need help? Reach out to our support team.
+              {t('footer.supportText')}
             </p>
           </div>
         </div>
 
         {/* Bottom Section */}
         <div className="mt-12 pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
             <p className="text-sm text-muted-foreground">
-              © {currentYear} MenuCraft. All rights reserved.
+              © {currentYear} {t('footer.rights')}
             </p>
-            <p className="text-sm text-muted-foreground flex items-center">
+            {/* <p className="text-sm text-muted-foreground flex items-center">
               Made with <Heart className="h-4 w-4 mx-1 text-red-500" /> for restaurants
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

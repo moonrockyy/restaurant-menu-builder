@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -7,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Signup() {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,51 +40,51 @@ export default function Signup() {
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+            <CardTitle className="text-2xl font-bold">{t('signup.title')}</CardTitle>
             <CardDescription>
-              Start creating beautiful menus for your business
+              {t('signup.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignup} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Your Name</Label>
+                <Label htmlFor="name">{t('signup.name')}</Label>
                 <Input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder={t('signup.namePlaceholder')}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="businessName">Business Name</Label>
+                <Label htmlFor="businessName">{t('signup.businessName')}</Label>
                 <Input
                   id="businessName"
                   type="text"
-                  placeholder="My Restaurant"
+                  placeholder={t('signup.businessNamePlaceholder')}
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('signup.email')}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t('signup.emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('signup.password')}</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder={t('signup.passwordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -94,7 +96,7 @@ export default function Signup() {
                 className="w-full bg-orange-600 hover:bg-orange-700"
                 disabled={loading}
               >
-                {loading ? "Creating account..." : "Sign Up"}
+                {loading ? t('signup.creatingAccount') : t('signup.signUpButton')}
               </Button>
             </form>
 
@@ -103,7 +105,7 @@ export default function Signup() {
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                <span className="bg-background px-2 text-muted-foreground">{t('signup.orContinueWith')}</span>
               </div>
             </div>
 
@@ -132,13 +134,13 @@ export default function Signup() {
                   fill="#EA4335"
                 />
               </svg>
-              Continue with Google
+              {t('signup.continueWithGoogle')}
             </Button>
 
             <div className="mt-6 text-center text-sm">
-              <span className="text-muted-foreground">Already have an account? </span>
+              <span className="text-muted-foreground">{t('signup.haveAccount')}</span>
               <Link to="/login" className="text-orange-600 hover:underline font-medium">
-                Login
+                {t('signup.login')}
               </Link>
             </div>
           </CardContent>

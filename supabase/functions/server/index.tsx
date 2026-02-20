@@ -12,15 +12,114 @@ app.use('*', logger(console.log))
 
 // Create Supabase client with service role key
 const getSupabaseClient = () => {
-  return createClient(
-    Deno.env.get('SUPABASE_URL') || '',
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '',
-  )
+  const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+  
+  console.log('=== Supabase Client Debug ===')
+  console.log('SUPABASE_URL exists:', !!supabaseUrl)
+  console.log('SUPABASE_URL length:', supabaseUrl.length)
+  console.log('SUPABASE_SERVICE_ROLE_KEY exists:', !!serviceRoleKey)
+  console.log('SERVICE_ROLE_KEY length:', serviceRoleKey.length)
+  console.log('SERVICE_ROLE_KEY starts with eyJ:', serviceRoleKey.startsWith('eyJ'))
+  console.log('==========================')
+  
+  return createClient(supabaseUrl, serviceRoleKey)
 }
 
 // Health check
 app.get('/make-server-b6941cdd/health', (c) => {
   return c.json({ status: 'ok' })
+})
+
+// Debug authentication endpoint
+app.get('/make-server-b6941cdd/debug-auth', async (c) => {
+  try {
+    console.log('=== DEBUG AUTH ENDPOINT ===')
+    
+    const authHeader = c.req.header('Authorization')
+    console.log('Auth header:', authHeader ? 'Present' : 'Missing')
+    console.log('Auth header value:', authHeader)
+    
+    if (!authHeader) {
+      return c.json({ 
+        error: 'No Authorization header found',
+        headers: Object.fromEntries(c.req.header()),
+        timestamp: new Date().toISOString()
+      }, 401)
+    }
+    
+    if (!authHeader.startsWith('Bearer ')) {
+      return c.json({ 
+        error: 'Invalid Authorization header format. Expected: Bearer <token>',
+        received: authHeader,
+        timestamp: new Date().toISOString()
+      }, 401)
+    }
+    
+    const accessToken = authHeader.split(' ')[1]
+    console.log('Access token length:', accessToken.length)
+    console.log('Access token starts with eyJ:', accessToken.startsWith('eyJ'))
+    
+    if (!accessToken) {
+      return c.json({ 
+        error: 'Access token is empty',
+        authHeader: authHeader,
+        timestamp: new Date().toISOString()
+      }, 401)
+    }
+    
+    const supabase = getSupabaseClient()
+    
+    // Test token verification
+    console.log('Attempting to verify token...')
+    const { data: { user }, error } = await supabase.auth.getUser(accessToken)
+    
+    console.log('Token verification result:')
+    console.log('Error:', error)
+    console.log('User:', user)
+    
+    if (error) {
+      return c.json({ 
+        error: 'Token verification failed',
+        details: error.message,
+        error_code: error.code || 'UNKNOWN',
+        token_length: accessToken.length,
+        token_starts_correctly: accessToken.startsWith('eyJ'),
+        timestamp: new Date().toISOString()
+      }, 401)
+    }
+    
+    if (!user?.id) {
+      return c.json({ 
+        error: 'Token is valid but no user found',
+        user_data: user,
+        timestamp: new Date().toISOString()
+      }, 401)
+    }
+    
+    return c.json({ 
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        created_at: user.created_at,
+        last_sign_in_at: user.last_sign_in_at
+      },
+      token_info: {
+        length: accessToken.length,
+        starts_with_eyJ: accessToken.startsWith('eyJ')
+      },
+      timestamp: new Date().toISOString()
+    })
+    
+  } catch (error) {
+    console.log('Debug auth endpoint error:', error)
+    return c.json({ 
+      error: 'Internal server error in debug endpoint',
+      details: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    }, 500)
+  }
 })
 
 // Sign up route

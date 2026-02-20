@@ -1,0 +1,401 @@
+{
+  "landing": {
+    "hero": {
+      "title": "Create Beautiful Menus for Your Business",
+      "subtitle": "Professional menu templates for restaurants, cafes, bars, and more. No design skills needed. Get started in minutes.",
+      "startCreating": "Start Creating Free",
+      "viewTemplates": "View Templates",
+      "goToDashboard": "Go to Dashboard",
+      "createMenu": "Create Menu"
+    },
+    "features": {
+      "title": "Simple Tools for Beautiful Menus",
+      "subtitle": "Clean templates designed for restaurants and cafes",
+      "restaurantMenus": {
+        "title": "Restaurant Menus",
+        "description": "Clean layouts for fine dining and casual restaurants"
+      },
+      "cafeMenus": {
+        "title": "Cafe Menus",
+        "description": "Warm designs perfect for coffee shops and bakeries"
+      },
+      "customStyle": {
+        "title": "Custom Style",
+        "description": "Personalize colors and fonts to match your brand"
+      }
+    },
+    "trusted": {
+      "title": "Trusted by Leading Brands",
+      "subtitle": "Join the restaurants and cafes that trust MenuCraft for their digital menu needs",
+      "stats": "5,000+ restaurants and cafes worldwide trust MenuCraft"
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "subtitle": "Join thousands of restaurants and cafes creating beautiful menus",
+      "button": "Create Your Menu Now",
+      "goToDashboard": "Go to Dashboard",
+      "createMenuNow": "Create Your Menu Now"
+    },
+    "testimonials": {
+      "title": "Loved by Thousands",
+      "subtitle": "See what restaurant owners are saying about MenuCraft",
+      "sarah": {
+        "quote": "MenuCraft transformed our restaurant's online presence. The Apple-inspired templates are stunning and our customers love the professional look!",
+        "name": "Sarah Chen",
+        "role": "Owner, The Golden Dragon"
+      },
+      "mike": {
+        "quote": "The custom background feature is a game-changer. Our customers can now upload their own images and create unique branded experiences that stand out.",
+        "name": "Mike Rodriguez",
+        "role": "CEO, Urban Grind Coffee Co."
+      },
+      "emily": {
+        "quote": "The Apple-inspired templates are absolutely gorgeous. Our menu looks more professional than ever, and our customers notice the quality difference.",
+        "name": "Emily Watson",
+        "role": "Head Chef, Bella Vista Restaurant"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about MenuCraft",
+      "q1": {
+        "question": "What is MenuCraft?",
+        "answer": "MenuCraft is a professional menu builder designed specifically for restaurants, cafes, and food service businesses. Create beautiful, digital menus that your customers can access instantly on their phones. No design skills required - choose from our professional templates and customize to match your brand."
+      },
+      "q2": {
+        "question": "How quickly can I create a menu?",
+        "answer": "You can create a professional menu in under 5 minutes! Simply choose a template, add your menu items, set your prices, and you're ready to go. Our intuitive interface makes it easy to organize categories, descriptions, and pricing all in one place."
+      },
+      "q3": {
+        "question": "Can customers access my menu offline?",
+        "answer": "Yes! When you generate a shareable link, customers can save your menu to their home screen for instant offline access. This is perfect for areas with poor internet connectivity or for customers who want quick access to your menu without using data."
+      },
+      "q4": {
+        "question": "Is my data secure?",
+        "answer": "Absolutely. We use industry-standard encryption and secure servers to protect your menu data. Only you and authorized staff can access and modify your menus. Regular backups ensure your information is never lost."
+      },
+      "q5": {
+        "question": "Can I manage multiple restaurants?",
+        "answer": "Yes! MenuCraft supports multiple restaurant locations under one account. Each location can have its own unique menu, branding, and shareable link. Perfect for restaurant groups or franchises."
+      }
+    },
+    "coffee": {
+      "title": "Enjoying MenuCraft?",
+      "subtitle": "If you find this tool helpful, consider buying me a coffee to support continued development",
+      "button": "Buy Me a Coffee"
+    }
+  },
+  "login": {
+    "title": "Welcome back",
+    "subtitle": "Enter your credentials to access your account",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "orContinue": "Or continue with",
+    "continueWithGoogle": "Continue with Google",
+    "noAccount": "Don't have an account? ",
+    "signUp": "Sign up"
+  },
+  "signup": {
+    "title": "Create an account",
+    "subtitle": "Start creating beautiful menus for your business",
+    "name": "Your Name",
+    "namePlaceholder": "John Doe",
+    "businessName": "Business Name",
+    "businessNamePlaceholder": "My Restaurant",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "signUpButton": "Sign Up",
+    "creatingAccount": "Creating account...",
+    "orContinueWith": "Or continue with",
+    "continueWithGoogle": "Continue with Google",
+    "haveAccount": "Already have an account? ",
+    "login": "Login"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "locale": "en-US"
+  },
+  "header": {
+    "about": "About",
+    "contribute": "Contribute",
+    "dashboard": "Dashboard",
+    "dashboardDescription": "Overview and stats",
+    "myMenus": "My Menus",
+    "myMenusDescription": "View and manage all your saved menus",
+    "login": "Login",
+    "getStarted": "Get Started",
+    "logout": "Logout"
+  },
+  "createMenuDialog": {
+    "title": "Create New Menu",
+    "subtitle": "Choose how you'd like to create your menu",
+    "chooseTemplate": "Choose from Templates",
+    "templateDescription": "Start with professional designs",
+    "createFromScratch": "Create Your Own",
+    "scratchDescription": "Build from scratch"
+  },
+  "dashboard": {
+    "welcomeBack": "Welcome back, ",
+    "manageMenu": "Manage your {{businessName}} menu",
+    "createTogether": "Let's create something amazing together",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "menuItems": "Menu items",
+    "differentCategories": "Different categories",
+    "perItem": "Per item",
+    "previewMenu": "Preview Menu",
+    "previewDescription": "See how your menu looks to customers",
+    "viewPreview": "View Preview",
+    "publicMenu": "Public Menu",
+    "publicMenuDescription": "Share your menu with customers",
+    "menuOverview": "Menu Overview",
+    "recentItems": "Recent Items",
+    "items": "Items",
+    "viewAll": "View All",
+    "createNewMenu": "Create New Menu",
+    "editMenu": "Edit Menu",
+    "createDescription": "Start building your menu from beautiful templates",
+    "updateDescription": "Update and customize your existing menu",
+    "getStartedButton": "Get Started",
+    "editMenuButton": "Edit Menu",
+    "totalItems": "Total Items",
+    "categories": "Categories",
+    "avgPrice": "Average Price",
+    "completion": "Completion",
+    "proTips": "Pro Tips",
+    "quickActions": "Quick Actions",
+    "addDescriptions": "Add descriptions to help customers make better choices.",
+    "keepPricesUpdated": "Keep prices updated to ensure customers get accurate pricing.",
+    "organizeCategories": "Group items logically for easy customer navigation.",
+    "view": "View",
+    "chooseTemplate": "Choose Template",
+    "templateDescription": "Start with professional designs",
+    "createFromScratch": "Create from Scratch",
+    "scratchDescription": "Build from scratch",
+    "customize": "Customize",
+    "customizeDescription": "Personalize colors and fonts to match your brand"
+  },
+  "myMenus": {
+    "title": "My Menus",
+    "subtitle": "Manage and edit all your saved menus",
+    "loading": "Loading your menus...",
+    "unknownDate": "Unknown",
+    "createFirstMenu": "Create Your First Menu",
+    "noMenusTitle": "No menus yet",
+    "noMenusDescription": "Create your first menu to get started. You can create multiple menus for different occasions or locations.",
+    "edit": "Edit",
+    "view": "View",
+    "deleteConfirmTitle": "Are you sure?",
+    "deleteConfirmDescription": "This action cannot be undone. This will permanently delete the menu.",
+    "viewAllMenus": "View All Menus"
+  },
+  "management": {
+    "title": "Management System",
+    "description": "Advanced tools to run your restaurant efficiently",
+    "comingSoon": "Coming Soon"
+  },
+  "footer": {
+    "product": "Product",
+    "home": "Home",
+    "about": "About",
+    "contribute": "Contribute",
+    "company": "Company",
+    "dashboard": "Dashboard",
+    "myMenus": "My Menus",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "contact": "Contact Us",
+    "rights": "All rights reserved.",
+    "brand": "MenuCraft",
+    "brandDescription": "Create beautiful, professional restaurant menus with ease. Design, customize, and share your culinary vision.",
+    "connect": "Connect",
+    "supportText": "Need help? Reach out to our support team."
+  },
+  "about": {
+    "title": "About MenuCraft",
+    "subtitle": "We're on a mission to help restaurants, cafes, and food businesses create stunning, professional menus that captivate customers and drive sales.",
+    "startCreatingFree": "Start Creating Free",
+    "backToHome": "Back to Home",
+    "ourStory": "Our Story",
+    "storySubtitle": "From a simple idea to a comprehensive menu design platform",
+    "storyParagraph1": "MenuCraft was born from a simple observation: many restaurants struggle with creating professional, attractive menus that reflect their brand identity. Traditional design tools are expensive and complicated, while basic templates lack the flexibility and creativity that modern restaurants need.",
+    "storyParagraph2": "Our team of designers, developers, and food industry experts came together to create a solution that combines the power of professional design tools with the simplicity of modern web applications. The result? MenuCraft - your complete menu design solution.",
+    "storyParagraph3": "Today, we're proud to help thousands of restaurants worldwide create beautiful menus that not only look great but also help increase customer engagement and boost sales.",
+    "restaurants": "Restaurants",
+    "templates": "Templates",
+    "menusCreated": "Menus Created",
+    "uptime": "Uptime",
+    "whyChooseMenucraft": "Why Choose MenuCraft?",
+    "whyChooseSubtitle": "Powerful features designed to make menu creation effortless",
+    "professionalTemplates": "Professional Templates",
+    "professionalTemplatesDesc": "Choose from 25+ professionally designed templates crafted for different cuisines and restaurant styles, from fine dining to casual cafes.",
+    "lightningFast": "Lightning Fast",
+    "lightningFastDesc": "Create stunning menus in minutes, not hours. Our intuitive interface makes it easy to design, customize, and publish your menu instantly.",
+    "mobileOptimized": "Mobile Optimized",
+    "mobileOptimizedDesc": "Your menus look perfect on any device. Share them via QR codes, social media, or embed them on your website.",
+    "ourValues": "Our Values",
+    "ourValuesSubtitle": "The principles that guide everything we do",
+    "customerFirst": "Customer First",
+    "customerFirstDesc": "Your success is our success. We listen to feedback and continuously improve based on your needs.",
+    "qualityDriven": "Quality Driven",
+    "qualityDrivenDesc": "We maintain the highest standards in design, functionality, and customer support.",
+    "passionForFood": "Passion for Food",
+    "passionForFoodDesc": "We love food and understand the restaurant industry. Our tools are built by food lovers, for food lovers.",
+    "globalImpact": "Global Impact",
+    "globalImpactDesc": "We're helping restaurants worldwide succeed in the digital age with beautiful, effective menu designs.",
+    "readyToTransform": "Ready to Transform Your Menu?",
+    "readyToTransformSubtitle": "Join thousands of restaurants that trust MenuCraft for their menu design needs",
+    "getStartedFree": "Get Started Free"
+  },
+  "contribute": {
+    "title": "Contribute to MenuCraft",
+    "subtitle": "Join our open-source community and help us build the best menu design platform for restaurants worldwide. Every contribution matters!",
+    "viewOnGithub": "View on GitHub",
+    "backToHome": "Back to Home",
+    "projectStats": "Project Statistics",
+    "projectStatsSubtitle": "See how our open-source project is growing",
+    "githubStars": "GitHub Stars",
+    "contributors": "Contributors",
+    "pullRequests": "Pull Requests",
+    "issuesResolved": "Issues Resolved",
+    "howYouCanContribute": "How You Can Contribute",
+    "howYouCanContributeSubtitle": "There are many ways to help improve MenuCraft",
+    "codeContributions": "Code Contributions",
+    "codeContributionsDesc": "Fix bugs, add new features, or improve existing functionality. Check our open issues and pull requests.",
+    "viewIssues": "View Issues",
+    "reportBugs": "Report Bugs",
+    "reportBugsDesc": "Found a bug? Report it with detailed information to help us fix it faster.",
+    "reportBug": "Report Bug",
+    "featureRequests": "Feature Requests",
+    "featureRequestsDesc": "Have an idea for a new feature? We'd love to hear your suggestions.",
+    "suggestFeature": "Suggest Feature",
+    "documentation": "Documentation",
+    "documentationDesc": "Help improve our documentation, tutorials, and user guides.",
+    "improveDocs": "Improve Docs",
+    "communitySupport": "Community Support",
+    "communitySupportDesc": "Help other users, answer questions, and share your knowledge.",
+    "joinDiscussions": "Join Discussions",
+    "spreadTheWord": "Spread the Word",
+    "spreadTheWordDesc": "Star our repository, share MenuCraft, and help us reach more users.",
+    "starProject": "Star Project",
+    "developmentSetup": "Development Setup",
+    "developmentSetupSubtitle": "Join our 89 contributors building the future of restaurant menus",
+    "quickStartGuide": "Quick Start Guide",
+    "cloneRepo": "Clone the repository",
+    "navigateProject": "Navigate to project",
+    "installDeps": "Install dependencies",
+    "startDevServer": "Start development server",
+    "typeScript": "TypeScript",
+    "typeScriptDesc": "Type-safe development",
+    "reactVite": "React 18 + Vite",
+    "reactViteDesc": "Modern development stack",
+    "mitLicense": "MIT License",
+    "mitLicenseDesc": "Open source forever"
+  },
+  "templates": {
+    "title": "Choose Your Perfect Template",
+    "subtitle": "Professional, modern templates designed for every type of food business",
+    "categories": {
+      "all": "All",
+      "cafe": "Cafe",
+      "restaurant": "Restaurant",
+      "bakery": "Bakery",
+      "bar": "Bar",
+      "pizza": "Pizza",
+      "seafood": "Seafood",
+      "fineDining": "Fine Dining",
+      "modern": "Modern"
+    },
+    "features": "Features",
+    "useTemplate": "Use This Template",
+    "noResults": "No templates found in this category",
+    "pagination": {
+      "showing": "Showing {{start}}-{{end}} of {{total}} templates",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "modernCafe": {
+      "name": "Modern Cafe",
+      "description": "Clean, minimalist design perfect for coffee shops and modern cafes",
+      "features": {
+        "clean": "Clean layout",
+        "minimal": "Minimal aesthetic",
+        "warm": "Warm color scheme"
+      }
+    },
+    "elegantRestaurant": {
+      "name": "Elegant Restaurant",
+      "description": "Sophisticated template for fine dining and upscale restaurants",
+      "features": {
+        "professional": "Professional appearance",
+        "classic": "Classic typography",
+        "refined": "Refined color palette"
+      }
+    },
+    "bakeryBoutique": {
+      "name": "Bakery Boutique",
+      "description": "Charming and sweet design perfect for bakeries and dessert shops",
+      "features": {
+        "charming": "Charming layout",
+        "sweet": "Sweet color palette",
+        "artistic": "Artistic typography"
+      }
+    },
+    "wineBar": {
+      "name": "Wine Bar",
+      "description": "Elegant and sophisticated design for wine bars and lounges",
+      "features": {
+        "sophisticated": "Sophisticated styling",
+        "elegant": "Elegant typography",
+        "curated": "Curated sections"
+      }
+    },
+    "pizzeriaClassic": {
+      "name": "Classic Pizzeria",
+      "description": "Traditional Italian pizzeria template with authentic charm",
+      "features": {
+        "authentic": "Authentic Italian style",
+        "traditional": "Traditional layout",
+        "inviting": "Inviting atmosphere"
+      }
+    },
+    "seafoodFresh": {
+      "name": "Fresh Seafood",
+      "description": "Ocean-inspired design for seafood restaurants and coastal dining",
+      "features": {
+        "fresh": "Fresh ocean colors",
+        "oceanic": "Oceanic feel",
+        "quality": "Premium quality focus"
+      }
+    },
+    "gourmetKitchen": {
+      "name": "Gourmet Kitchen",
+      "description": "Luxurious template for high-end restaurants and gourmet dining",
+      "features": {
+        "premium": "Premium design",
+        "exquisite": "Exquisite details",
+        "memorable": "Memorable experience"
+      }
+    },
+    "minimalistModern": {
+      "name": "Minimalist Modern",
+      "description": "Clean and contemporary design for modern food businesses",
+      "features": {
+        "clean": "Clean lines",
+        "simple": "Simple elegance",
+        "effective": "Effective presentation"
+      }
+    }
+  }
+}
